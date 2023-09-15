@@ -13,14 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cartId');
-            $table->string('clientId');
-            $table->text('info');
+            $table->string('paymentMethod');
+            $table->string('paymentCondition');
             $table->timestamps();
 
-            $table->unique(['cartId', 'clientId']);
+            // Definindo as chaves estrangeiras
+            $table->foreign('cartId')->references('id')->on('carts');
         });
     }
 
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customer');
+        Schema::dropIfExists('payments');
     }
 };

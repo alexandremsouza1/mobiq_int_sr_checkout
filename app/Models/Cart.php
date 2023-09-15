@@ -7,7 +7,7 @@ namespace App\Models;
 class Cart extends BaseModel
 {
   
-  protected $fillable = ['clientId', 'totalOriginal', 'total', 'status'];
+  protected $fillable = ['id','customerId', 'totalOriginal', 'total', 'status'];
 
   protected $rules = [
     
@@ -34,6 +34,12 @@ class Cart extends BaseModel
   //customer
   public function customer()
   {
-    return $this->belongsTo(Customer::class, 'clientId');
+    return $this->belongsTo(Customer::class, 'customerId');
+  }
+
+  //payment
+  public function payment()
+  {
+    return $this->hasOne(Payment::class, 'cartId');
   }
 }

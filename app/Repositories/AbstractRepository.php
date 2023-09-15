@@ -68,11 +68,21 @@ abstract class AbstractRepository implements IEntityRepository
         $id = isset($data[$key]) ? $data[$key] : null;
         $this->model->fill($data);
         if($this->model->validate($data)) {
-            $item = $this->model->updateOrCreate(
+            $result = $this->model->updateOrCreate(
                 [$key => $id],
                 $data
             );
-            return $item;
+            return $result;
+        }
+        return false;
+    }
+
+    public function save($data)
+    {
+        $this->model->fill($data);
+        if($this->model->validate($data)) {
+            $this->model->save();
+            return $this->model;
         }
         return false;
     }
@@ -92,5 +102,10 @@ abstract class AbstractRepository implements IEntityRepository
     public function delete($id)
     {
         return $this->model->where('id', $id)->delete();
+    }
+
+    public function getModel()
+    {
+        return $this->model;
     }
 }

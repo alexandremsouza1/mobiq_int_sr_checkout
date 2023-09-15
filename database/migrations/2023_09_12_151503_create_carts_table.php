@@ -15,11 +15,15 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->string('clientId')->default('0');
+            $table->unsignedBigInteger('customerId');
             $table->decimal('totalOriginal', 10, 2)->default(0);
             $table->decimal('total', 10, 2)->default(0);
+            $table->unsignedBigInteger('shippingId')->nullable();
             $table->string('status')->default('open');
             $table->timestamps();
+
+            $table->foreign('customerId')->references('id')->on('customers');
+            $table->foreign('shippingId')->references('id')->on('shippings');
         });
     }
 

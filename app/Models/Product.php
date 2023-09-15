@@ -9,6 +9,7 @@ class Product extends BaseModel
 
   protected $fillable = [
     "suggestedQuantity",
+    "stock",
     "action",
     "charge",
     "code",

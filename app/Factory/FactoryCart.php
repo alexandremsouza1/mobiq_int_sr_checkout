@@ -2,25 +2,23 @@
 
 namespace App\Factory;
 
-use App\Dto\CartItemDto;
-use App\Dto\CustomerDto;
 use App\Integrations\SourceProducts;
 use App\Models\Cart;
 
-class FactoryCart {
+class FactoryCart implements FactoryInterface {
 
 
-  private $customer;
+  protected $factoryCustomer;
 
-  private $cartItem;
+  protected $factoryCartItem;
 
-  private $sourceProducts;
+  protected $factoryPayment;
 
-  public function __construct(CustomerDto $customer, CartItemDto $cartItem,SourceProducts $sourceProducts)
+  public function __construct(FactoryCustomer $factoryCustomer, FactoryCartItem $factoryCartItem, FactoryPayment $factoryPayment)
   {
-    $this->customer = $customer;
-    $this->cartItem = $cartItem;
-    $this->sourceProducts = $sourceProducts;
+    $this->factoryCustomer = $factoryCustomer;
+    $this->factoryCartItem = $factoryCartItem;
+    $this->factoryPayment = $factoryPayment;
   }
 
   public function createCustomer(Cart $cart, array $params)
@@ -39,5 +37,15 @@ class FactoryCart {
       'label' => 'Produto teste',
     ], $product);
     return $cartItem;
+  }
+
+
+
+  public function convertData(array $data)
+  {
+    $customer = $this->factoryCustomer->convertData($data['customer']);
+    $item = $this->factoryCartItem->convertData($data['item']);
+    $payment = $this->factoryPayment->convertData($data['payment']);
+    return [$customer, $item, $payment];
   }
 }

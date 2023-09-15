@@ -7,7 +7,7 @@ namespace App\Models;
 class Payment extends BaseModel
 {
   
-  protected $fillable = ['userId', 'cartId', 'type', 'amount', 'status'];
+  protected $fillable = ['id','cartId', 'paymentMethod', 'paymentCondition'];
 
   protected $rules = [
     

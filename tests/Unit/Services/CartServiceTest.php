@@ -2,13 +2,21 @@
 
 namespace Tests\Unit\Services;
 
-use App\Dto\CartItemDto;
-use App\Dto\CustomerDto;
+
 use App\Factory\FactoryCart;
+use App\Factory\FactoryCartItem;
+use App\Factory\FactoryCustomer;
+use App\Factory\FactoryPayment;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Customer;
+use App\Models\Payment;
+use App\Models\Product;
+use App\Repositories\CartItemRepository;
 use App\Repositories\CartRepository;
+use App\Repositories\CustomerRepository;
+use App\Repositories\PaymentRepository;
+use App\Repositories\ProductRepository;
 use App\Services\CartService;
 use Mockery;
 use Tests\TestCase;
@@ -27,39 +35,49 @@ class CartServiceTest extends TestCase
 
   private function mockService()
   {
-    $mock = new CartService($this->mockRepository(), $this->mockFactoryCart());
+    $mock = new CartService($this->mockFactoryCart(), $this->mockSourceProducts(), $this->mockCartRepository(), $this->mockProductsRepository());
     return $mock;
   }
 
-  public function mockRepository()
+  public function mockCartRepository()
   {
     $cartModel = new Cart();
     $mock = new CartRepository($cartModel);
     return $mock;
   }
 
+  public function mockProductsRepository()
+  {
+    $cartModel = new Product();
+    $mock = new ProductRepository($cartModel);
+    return $mock;
+  }
+
   public function mockFactoryCart()
   {
-    $mock = new FactoryCart($this->mockCustomerDto(), $this->mockCartItemDto(), $this->mockSourceProducts());
+    $mock = new FactoryCart($this->mockCustomer(), $this->mockCartItem(), $this->mockPayment());
     return $mock;
   }
 
-  public function mockCustomerDto()
+  public function mockCustomer()
   {
-    $customerModel = new Customer();
-    $mock = new CustomerDto($customerModel);
+    $customerRepository = new CustomerRepository(new Customer());
+    $mock = new FactoryCustomer($customerRepository);
     return $mock;
   }
 
-  public function mockCartItemDto()
-  {
-    $mock = new CartItemDto($this->mockCartItem());
-    return $mock;
-  }
 
   public function mockCartItem()
   {
-    $mock = new CartItem();
+    $cartItemRepository  = new CartItemRepository(new CartItem());
+    $mock = new FactoryCartItem($cartItemRepository);
+    return $mock;
+  }
+
+  public function mockPayment()
+  {
+    $paymentRepository  = new PaymentRepository(new Payment()); 
+    $mock = new FactoryPayment($paymentRepository);
     return $mock;
   }
 
@@ -98,7 +116,7 @@ class CartServiceTest extends TestCase
       "item":{
         "product":52792,
         "weight":100,
-        "name":"item1",
+        "label":"item1",
         "price":100,
         "quantity":1
      },
@@ -112,7 +130,7 @@ class CartServiceTest extends TestCase
       }
     }', true);
 
-    $response = $this->service->addItem($data['customer'], $data['payment'], $data['item']);
+    $response = $this->service->addItem($data);
     $this->assertIsArray($response);
   }
 }

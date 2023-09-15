@@ -27,12 +27,10 @@ class CartController extends DefaultApiController
     return response()->json(['data' => $cart, 'message' => $messageText, 'status' => true], $statusCode);
   }
 
-  public function add(Request $request, $item)
+  public function add(Request $request)
   {
     $data = $request->all();
-    $customer = $data['customer'];
-    $item = $data['item'];
-    $cart = $this->service->addItem($customer, $item);
+    $cart = $this->service->addItem($data);
     $statusCode = 200;
     $messageText = 'Item adicionado ao carrinho com sucesso';
     return response()->json(['data' => $cart, 'message' => $messageText, 'status' => true], $statusCode);

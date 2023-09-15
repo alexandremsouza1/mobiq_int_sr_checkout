@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 class Customer extends BaseModel
 {
   
-  protected $fillable = ['cartId', 'clientId', 'info'];
+  protected $fillable = ['clientId', 'info'];
 
   protected $rules = [
     
@@ -26,22 +26,8 @@ class Customer extends BaseModel
     return [];
   }
 
-  //belongsTo
-  public function cart()
-  {
-    return $this->belongsTo(Cart::class, 'cartId');
-  }
-
-
   public function setInfoAttribute($value)
   {
-    $string = json_encode($value);
-    $this->attributes['info'] = Crypt::encryptString($string);
-  }
-
-  public function getInfoAttribute()
-  {
-    $string = Crypt::decryptString($this->attributes['info']);
-    return json_decode($string);
+    $this->attributes['info'] = json_encode($value);
   }
 }
